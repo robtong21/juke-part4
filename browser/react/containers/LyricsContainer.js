@@ -3,6 +3,9 @@
 import React from 'react'
 import store from '../store'
 import Lyrics from '../components/Lyrics'
+import { setLyrics, fetchLyrics } from '../action-creators/lyrics'
+import axios from 'axios'
+
 
 class LyricsContainer extends React.Component {
     constructor() {
@@ -34,7 +37,21 @@ class LyricsContainer extends React.Component {
     }
     handleSubmit(evt) {
         evt.preventDefault();
-        console.log(this.state)
+
+        if (this.state.artistQuery && this.state.songQuery) {
+
+            var artist = this.state.artistQuery;
+            var song = this.state.songQuery;
+
+            const thunk = fetchLyrics(artist, song);
+            store.dispatch(thunk);
+            // axios.get(`/api/lyrics/${this.state.artistQuery}/${this.state.songQuery}`)
+            // .then(res => {
+            //     console.log("Res IS", res);
+            //     const setLyricsAction = setLyrics(res.data.lyric);
+            //     store.dispatch(setLyricsAction);
+            // });
+        }
     }
     render() {
         return (
@@ -42,8 +59,9 @@ class LyricsContainer extends React.Component {
                 setArtist={this.setArtist} 
                 setSong={this.setSong} 
                 handleSubmit={this.handleSubmit}
-                text={this.state.text}
+                text={this.state.lyrics.text}
                 artistQuery={this.state.artistQuery}
+                songQuery={this.state.songQuery}
 
             />
         )
